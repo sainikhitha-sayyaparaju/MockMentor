@@ -1,0 +1,27 @@
+pip install virtualenvwrapper-win
+mkvirtualenv env3
+pip install django
+django-admin --version
+django-admin startproject MockMentor
+cd MockMentor
+python manage.py runserver
+
+pip install djongo
+pip install dnspython
+python manage.py makemigrations
+pip install pymongo==3.12.3
+pip install pyz
+python manage.py migrate
+
+in settings.py -- 
+DATABASES = {
+    'default': {
+        'ENGINE': 'djongo',
+        'NAME': 'main',
+        'CLIENT': {
+            'host': 'mongodb+srv://mockmentorsvecw:SVECW123@cluster0.gty9hd7.mongodb.net/',
+            'username': 'mockmentorsvecw',
+            'password': 'SVECW123',
+        }
+    }
+}

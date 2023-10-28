@@ -1,0 +1,26 @@
+{% extends 'dashboard/base.html' %} {% load static %} {% block content %}
+
+<section class="container text-center">
+  <h3>Welcome</h3>
+
+  <hr />
+  <br />
+  <div class="row">
+    <div class="col-md-3">
+      <a href="#">
+        <div class="card">
+          <img
+            class="card-img-top"
+            src="{% static 'images/interview.png' %}"
+            alt="interview image"
+          />
+          <div class="card-body">
+            <h5 class="card-title">Interview</h5>
+            Ready to take the interview
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock content %}
