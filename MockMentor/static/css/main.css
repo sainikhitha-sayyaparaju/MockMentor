@@ -207,3 +207,41 @@ footer .column a+a {
 .account-heading {
     font-size: 2.5rem;
 }
+
+.left-aligned-form {
+    text-align: left;
+    /* Additional styles for the form container if needed */
+}
+
+/* Optional: Left-align the labels within the form fields */
+.left-aligned-form .form-group label {
+    text-align: left;
+}
+
+.left-aligned-form .form-group {
+    text-align: left;
+}
+
+.form-container {
+    text-align: center;
+}
+
+.input-field {
+    margin-bottom: 20px;
+    padding: 10px;
+    width: 300px;
+    font-size: 16px;
+}
+
+.start-button {
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.start-button:hover {
+    background-color: #45a049;
+}

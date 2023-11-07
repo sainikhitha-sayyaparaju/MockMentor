@@ -1,0 +1,12 @@
+{% extends 'dashboard/base.html' %} 
+{% load static %} 
+{% load crispy_forms_tags %} 
+{% block content %}
+
+<section class="container text-center">
+    <h1>camera</h1>
+  <img src="{% url 'video_feed' %}" /><br/><br/>
+  <a href="{% url 'home' %}"><button type="button" class="btn btn-danger"><h5>&nbsp;&nbsp;End&nbsp;&nbsp;</h5></button></a><br/><br/>
+</section>
+
+{% endblock content %}

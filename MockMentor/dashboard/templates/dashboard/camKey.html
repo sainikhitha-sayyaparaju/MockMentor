@@ -1,0 +1,26 @@
+{% extends 'dashboard/base.html' %} 
+{% load static %} 
+{% load crispy_forms_tags %} 
+{% block content %}
+
+<div class=" container">
+    <form method="POST">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="Key">Key</label>
+        <input type="text" class="form-control" id="key" name="key" placeholder="Enter Key">
+      </div>
+      <button href="" class="btn btn-outline-info" type="submit">
+        Start Interview
+      </button>
+    </form>
+    <br/><br/>
+    <div class="border border-dark" >
+        <h4 class = "text-info">Process</h4>
+        <h6>Install IP Webcam<br>
+        After installing, click on start server and enter the key given there.</h6>
+    </div>
+
+</div>
+
+{% endblock content %}

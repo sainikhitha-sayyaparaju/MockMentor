@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'dashboard',
+    'crispy_forms',
+    'crispy_bootstrap4',
+    'gridfs_storage',
     'djongo',
 ]
 
@@ -85,7 +88,7 @@ WSGI_APPLICATION = 'MockMentor.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'main',
+        'NAME': 'test',
         'CLIENT': {
             'host': 'mongodb+srv://mockmentorsvecw:SVECW123@cluster0.gty9hd7.mongodb.net/',
             'username': 'mockmentorsvecw',
@@ -138,3 +141,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR/"static"]
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+# defaults to default local mongodb server
+DEFAULT_GRIDFS_URL = 'mongodb://127.0.0.1:27017'
+# if set to None, it will refuse to serve files and raise an Exception
+DEFAULT_GRIDFS_SERVE_URL = None
+DEFAULT_GRIDFS_COLLECTION = 'storage'
+DEFAULT_FILE_STORAGE = 'gridfs_storage.storage.GridFSStorage'
