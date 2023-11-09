@@ -22,6 +22,8 @@ import openai
 
 
 questions = []
+os.environ["OPENAI_API_KEY"] = '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'
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def home(request):
     return render(request, 'dashboard/home.html')
@@ -40,13 +42,6 @@ def takeInterview(request):
     if request.method == 'POST':
         form = InterviewForm(request.POST)
         if form. is_valid():
-            # interview = Interview(
-            #     topic=request.POST['topic'],
-            #     subtopic=request.POST['subtopic'],
-            #     expertise=request.POST['expertise'],
-            #     number=request.POST['number']
-            # )
-            # interview.save()
             Interview.objects.create(
                 topic=request.POST['topic'],
                 subtopic=request.POST['subtopic'],
@@ -58,6 +53,7 @@ def takeInterview(request):
             response = get_questions(request.POST['topic'], request.POST['expertise'], request.POST['number'], request.POST['subtopic'])
             global questions
             questions = list(response.split('$'))
+            questions.pop(-1)
             print("questions", questions)
             if request.POST['way'] == 'mobile':
                 return redirect('camKey')
@@ -67,14 +63,6 @@ def takeInterview(request):
         form = InterviewForm()
 
     context = {'form': form}
-
-    # image_instance = Video()
-    # # Set the image field
-    # with open('C:\\Users\\saini\\OneDrive\\Desktop\\Major Project\\MockMentor\\dashboard\\Passport size image.jpeg', 'rb') as f:
-    #     image_instance.first_pic.save('interview.png', File(f))
-
-    # Save the instance to the database
-    # image_instance.save()
     return render(request, 'dashboard/takeInterview.html', context)
 
 
@@ -91,13 +79,6 @@ def getCamKey(request):
     
     return render(request, "dashboard/camKey.html")
 
-
-def image_to_base64(image):
-    buff = BytesIO()
-    image.save(buff, format="PNG")
-    img_str = base64.b64encode(buff.getvalue())
-    img_str = img_str.decode("utf-8")  # convert to str and cut b'' chars
-    return img_str
 
 
 def gen(camera):
@@ -116,7 +97,6 @@ def webcam_feed(request, key):
     print(key, "webcam")
     return StreamingHttpResponse(gen(IPWebCam(key)),
                                  content_type='multipart/x-mixed-replace; boundary=frame')
-    # return "MockMentor\static\images\interview.png"
 
 
 def getStreaming(request):
@@ -149,9 +129,6 @@ def generate_prompt(topic, expertise, number, specialization):
     return f'generate {number} questions on the topic {topic} based on the expertise level {expertise}. give me just the questions. give me the questions in a single line without numbering the questions, add a dollar symbol after each question'
 
 def get_questions(topic, expertise, number, specialization):
-    API_KEY = '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'
-    os.environ["OPENAI_API_KEY"] = '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'
-    openai.api_key = os.getenv("OPENAI_API_KEY")
     response = openai.Completion.create(engine='text-davinci-003',
                                         prompt = generate_prompt(topic, expertise, number, specialization),
                                         temperature = 0.7,
@@ -160,6 +137,8 @@ def get_questions(topic, expertise, number, specialization):
 
 def speak(text):
     engine = pyttsx3.init()
+    engine.setProperty('gender', 'female')  # Set the voice to female (Note: This property might not work with all voices)
+    engine.setProperty('rate', 140)
     engine.say(text)
     engine.runAndWait()
 
@@ -167,7 +146,7 @@ def speak(text):
 def ask_questions():
     for question in questions:
         threading.Thread(target=speak, args=(question,)).start()
-        time.sleep(10)
+        time.sleep(5)
 
 def video_stream():
     cap = cv2.VideoCapture(0)
