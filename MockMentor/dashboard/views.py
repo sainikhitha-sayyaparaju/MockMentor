@@ -10,7 +10,9 @@ from io import BytesIO
 import base64
 import mediapipe as mp
 import cv2
+from dashboard.emotionDetection import face_emotion_detection
 from dashboard.eyeGazeDetection import iris_position_detection
+# from checkLocation import process_frame
 import pyttsx3
 import threading
 import cv2
@@ -22,11 +24,23 @@ import openai
 
 
 questions = []
-os.environ["OPENAI_API_KEY"] = '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'
+# API_KEY = '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' old_key
+API_KEY = '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'
+os.environ["OPENAI_API_KEY"] = API_KEY
 openai.api_key = os.getenv("OPENAI_API_KEY")
+stop_streaming = False
+emotions = []
+directions = []
+position = []
+
 
 def home(request):
+    print(emotions, directions, position)
     return render(request, 'dashboard/home.html')
+
+def feedback(request):
+    print(emotions, directions, position)
+    return render(request, 'dashboard/feedback.html')
 
 
 def getCam(request):
@@ -137,7 +151,8 @@ def get_questions(topic, expertise, number, specialization):
 
 def speak(text):
     engine = pyttsx3.init()
-    engine.setProperty('gender', 'female')  # Set the voice to female (Note: This property might not work with all voices)
+    voices = engine.getProperty("voices")
+    engine.setProperty('voice', voices[1].id)
     engine.setProperty('rate', 140)
     engine.say(text)
     engine.runAndWait()
@@ -148,25 +163,56 @@ def ask_questions():
         threading.Thread(target=speak, args=(question,)).start()
         time.sleep(5)
 
-def video_stream():
+def stop_stream():
+    global stop_streaming
+    stop_streaming = True
+
+def video_stream(main_interview):
+    global emotions
+    global directions
+    global position
+    emotions = []
+    directions = []
+    position = []
     cap = cv2.VideoCapture(0)
-    while True:
+    while not stop_streaming:
         ret, frame = cap.read()
         if not ret:
             break
-        _, buffer = cv2.imencode('.jpg', frame)
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        frame_flip = cv2.flip(frame, 1)
+        if main_interview:
+            map_face_mesh = mp.solutions.face_mesh
+            with map_face_mesh.FaceMesh(max_num_faces=1, refine_landmarks=True, min_detection_confidence=0.5, min_tracking_confidence=0.5) as face_mesh:
+                results = face_mesh.process(frame_flip)
+                em = face_emotion_detection(frame_flip)
+                emotions.append(em)
+                if results.multi_face_landmarks:
+                    dir = iris_position_detection(frame_flip, results, True)
+                    directions.append(dir)
+        else:
+            # process_frame(frame_flip)
+            pass
+        _, buffer = cv2.imencode('.jpg', frame_flip)
         frame = buffer.tobytes()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
+
+
 @gzip.gzip_page
-def test(request):
+def main_interview(request):
     print("que", questions)
     audio_thread = threading.Thread(target=ask_questions)
     audio_thread.start()
 
     def generate():
-        for frame in video_stream():
+        for frame in video_stream(True):
             yield frame
-
+        print()
+    
     return StreamingHttpResponse(generate(), content_type='multipart/x-mixed-replace;boundary=frame')
+   
+def stop_streaming_view(request):
+    stop_stream()
+    return HttpResponse("Streaming stopped.")

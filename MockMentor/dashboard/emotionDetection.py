@@ -16,7 +16,7 @@ face_classifier = cv2.CascadeClassifier(
     cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
 classifier = load_model(r'D:/emotionDetection/model.h5')
 #
-emotions = []
+# emotions = []
 audio_emotion = ["angry", "disgust", "fear", "happy", "neutral", "ps", "sad"]
 print("sravya e")
 
@@ -40,11 +40,12 @@ def face_emotion_detection(frame):
             label_position = (x, y)
             cv2.putText(frame, label, label_position,
                         cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-            emotions.append(label)
+            # emotions.append(label)
         else:
             cv2.putText(frame, 'No Faces', (30, 80),
                         cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-    print(emotions)
+    # print(emotions)
+    return label
 
 
 print("pooji")

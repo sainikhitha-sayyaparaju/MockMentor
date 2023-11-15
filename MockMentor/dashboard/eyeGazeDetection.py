@@ -12,7 +12,7 @@ L_H_RIGHT = [133]
 R_H_LEFT = [362]
 R_H_RIGHT = [263]
 cap = cv2.VideoCapture(0)
-directions = []
+# directions = []
 print("sravya eye")
 
 
@@ -53,7 +53,8 @@ def iris_position_detection(img, results, draw=False):
     iris_pos, ratio = iris_position(
         center_right, mesh_coord[R_H_RIGHT], mesh_coord[R_H_LEFT][0])
     # print(iris_pos)
-    directions.append(iris_pos)
+    # directions.append(iris_pos)
     cv2.putText(img, f"Iris_position : {iris_pos}", (30, 30),
                 cv2.FONT_HERSHEY_PLAIN, 1.2, (0, 255, 0), 1, cv2.LINE_AA)
-    print(directions)
+    # print(directions)
+    return iris_pos
