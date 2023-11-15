@@ -1,5 +1,5 @@
 from djongo import models
-from gridfs_storage.storage import GridFSStorage
+# from gridfs_storage.storage import GridFSStorage
 
 
 class Interview(models.Model):
@@ -9,8 +9,8 @@ class Interview(models.Model):
     number = models.IntegerField(default=10)
 
 
-class Video(models.Model):
-    first_pic = models.ImageField(storage=GridFSStorage(
-        location='sample/images'))
+# class Video(models.Model):
+#     first_pic = models.ImageField(storage=GridFSStorage(
+#         location='sample/images'))
 
 

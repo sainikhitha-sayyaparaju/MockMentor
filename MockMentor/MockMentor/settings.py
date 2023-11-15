@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'dashboard',
     'crispy_forms',
     'crispy_bootstrap4',
-    'gridfs_storage',
+    # 'gridfs_storage',
     'djongo',
 ]
 
@@ -145,8 +145,8 @@ STATICFILES_DIRS = [BASE_DIR/"static"]
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # defaults to default local mongodb server
-DEFAULT_GRIDFS_URL = 'mongodb://127.0.0.1:27017'
-# if set to None, it will refuse to serve files and raise an Exception
-DEFAULT_GRIDFS_SERVE_URL = None
-DEFAULT_GRIDFS_COLLECTION = 'storage'
-DEFAULT_FILE_STORAGE = 'gridfs_storage.storage.GridFSStorage'
+# DEFAULT_GRIDFS_URL = 'mongodb://127.0.0.1:27017'
+# # if set to None, it will refuse to serve files and raise an Exception
+# DEFAULT_GRIDFS_SERVE_URL = None
+# DEFAULT_GRIDFS_COLLECTION = 'storage'
+# DEFAULT_FILE_STORAGE = 'gridfs_storage.storage.GridFSStorage'

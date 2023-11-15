@@ -14,7 +14,7 @@ emotion_labels = ['Angry', 'Disgust', 'Fear',
                   'Happy', 'Neutral', 'Sad', 'Surprise']
 face_classifier = cv2.CascadeClassifier(
     cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-classifier = load_model(r'D:/emotionDetection/model.h5')
+classifier = load_model(r'C:/Users/saini/OneDrive/Desktop/Major Project/MockMentor/dashboard/model.h5')
 #
 # emotions = []
 audio_emotion = ["angry", "disgust", "fear", "happy", "neutral", "ps", "sad"]
@@ -24,7 +24,7 @@ print("sravya e")
 def face_emotion_detection(frame):
     labels = []
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    faces = face_classifier.detectMultiScale(gray)
+    faces = face_classifier.detectMultiScale(gray)   #[(x, y, w, h), (x, y, w, h)]
     for (x, y, w, h) in faces:
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 255), 2)
         roi_gray = gray[y:y + h, x:x + w]
