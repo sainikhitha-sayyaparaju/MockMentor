@@ -77,6 +77,9 @@ def feedback(request):
 def getCam(request):
     return render(request, 'dashboard/camera.html')
 
+def checkPosition(request):
+    return render(request, 'dashboard/checkPosition.html')
+
 
 def history(request):
     context = {'interviews': Interview.objects.all()}
@@ -236,6 +239,16 @@ def main_interview(request):
     print("que", questions)
     audio_thread = threading.Thread(target=ask_questions)
     audio_thread.start()
+
+    def generate():
+        for frame in video_stream(True):
+            yield frame
+        print()
+    
+    return StreamingHttpResponse(generate(), content_type='multipart/x-mixed-replace;boundary=frame')
+
+@gzip.gzip_page
+def checkPositionVideo(request):
 
     def generate():
         for frame in video_stream(False):
