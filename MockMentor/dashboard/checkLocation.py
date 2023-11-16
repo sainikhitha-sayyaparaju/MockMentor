@@ -1,66 +1,32 @@
-# import cv2
-# import dlib
+import cv2
 
-# # Load pre-trained face detector and facial landmarks predictor
-# face_detector = dlib.get_frontal_face_detector()
-# landmark_predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
+face_cascade = cv2.CascadeClassifier(
+    cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
 
-# # Function to check if the face is centered
-# def is_face_centered(face_landmarks, frame_width, frame_height, tolerance=0.1):
-#     # Assuming 68 facial landmarks, the center can be determined using landmarks 30 (nose tip) and 8 (jaw)
-#     nose_tip = face_landmarks.part(30)
-#     jaw_point = face_landmarks.part(8)
-
-#     # Calculate the horizontal distance from the nose tip to the center of the frame
-#     distance_to_center_x = abs(nose_tip.x - frame_width // 2) / frame_width
-
-#     # Calculate the vertical distance from the jaw point to the center of the frame
-#     distance_to_center_y = abs(jaw_point.y - frame_height // 2) / frame_height
-
-#     # Check if the face is within the specified tolerance of the center in both dimensions
-#     return distance_to_center_x < tolerance and distance_to_center_y < tolerance
+def is_face_centered(face_coordinates, frame_width, frame_height, tolerance=0.15):
+    distance_to_center_x = abs(face_coordinates[0] + face_coordinates[2] // 2 - frame_width // 2) / frame_width
+    distance_to_center_y = abs(face_coordinates[1] + face_coordinates[3] // 2 - frame_height // 2) / frame_height
+    return distance_to_center_x < tolerance and distance_to_center_y < tolerance
 
 
-# # Function to check if the face is at the right distance
-# def is_face_at_right_distance(face_landmarks, reference_distance, tolerance=0.1):
-#     # Assuming 68 facial landmarks, the distance can be determined using landmarks 30 (nose tip) and 8 (jaw)
-#     nose_tip = face_landmarks.part(30)
-#     jaw_point = face_landmarks.part(8)
+def is_face_at_right_distance(face_coordinates, reference_distance, tolerance=0.15):
+    face_height = face_coordinates[3]
+    return abs(face_height - reference_distance) / reference_distance < tolerance
 
-#     # Calculate the vertical distance between the nose tip and the jaw point
-#     actual_distance = abs(nose_tip.y - jaw_point.y)
+def process_frame(frame):
+    frame_height, frame_width, _ = frame.shape
 
-#     # Check if the actual distance is within the specified tolerance of the reference distance
-#     return abs(actual_distance - reference_distance) / reference_distance < tolerance
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-# # Main function for processing each frame
-# def process_frame(frame):
-#     frame_height, frame_width, _ = frame.shape
+    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
 
-#     # Convert the frame to grayscale for face detection
-#     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    for (x, y, w, h) in faces:
+        if is_face_centered((x, y, w, h), frame_width, frame_height):
+            cv2.putText(frame, "Face Centered", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
+        else:
+            cv2.putText(frame, "Face Not Centered", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
 
-#     # Detect faces in the frame
-#     faces = face_detector(gray)
-
-#     for face in faces:
-#         # Get facial landmarks for the detected face
-#         landmarks = landmark_predictor(gray, face)
-
-#         # Check if the face is centered
-#         if is_face_centered(landmarks, frame_width, frame_height):
-#             cv2.putText(frame, "Face Centered", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
-#         else:
-#             cv2.putText(frame, "Face Not Centered", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
-
-#         # Check if the face is at the right distance (e.g., 150 pixels in this example)
-#         if is_face_at_right_distance(landmarks, reference_distance=150):
-#             cv2.putText(frame, "Right Distance", (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
-#         else:
-#             cv2.putText(frame, "Wrong Distance", (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
-
-#     return frame
-
-
-
-
+        if is_face_at_right_distance((x, y, w, h), reference_distance=150):
+            cv2.putText(frame, "Right Distance", (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
+        else:
+            cv2.putText(frame, "Wrong Distance", (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
