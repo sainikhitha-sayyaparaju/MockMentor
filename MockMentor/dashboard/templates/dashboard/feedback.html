@@ -1,7 +1,150 @@
-{% extends 'dashboard/base.html' %} {% load static %} {% load crispy_forms_tags
-    %} {% block content %}
-    
-    <h1>Feedback</h1>
-    
-    {% endblock content %}
-    
+{% extends 'dashboard/base.html' %} 
+{% load static %}
+{% load crispy_forms_tags %} 
+
+{% block content %}
+
+<div class="container mt-5">
+  <h2 class="text-center mb-4">YOUR SPEAKING INSIGHTS</h2>
+
+  <div class="d-flex justify-content-center mb-3">
+    <div class="btn-group w-100">
+      <button type="button" class="btn btn-outline-primary w-50" data-bs-toggle="tab" href="#coaching">Coaching</button>
+      <button type="button" class="btn btn-outline-primary w-50" data-bs-toggle="tab" href="#analytics">Analytics</button>
+    </div>
+  </div>
+
+  <div class="tab-content">
+    <div id="coaching" class="tab-pane fade show active">
+      <ul class="list-group">
+        <li class="list-group-item {% if 'analytics' == tab %}visible{% else %}invisible{% endif %}">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <i class="fa fa-check-circle text-success"></i> Eye Contact: 84%
+            </div>
+            <a href="#" class="toggle-info" data-bs-toggle="collapse" data-bs-target="#eyeContactInfo">
+              <i class="fa fa-caret-down"></i>
+            </a>
+          </div>
+          <div id="eyeContactInfo" class="collapse mt-2">
+            Your eye contact was excellent, maintaining it for 84% of your presentation. This helped you connect with your audience and build rapport.
+          </div>
+        </li>
+        <li class="list-group-item {% if 'coaching' == tab %}visible{% else %}invisible{% endif %}">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <i class="fa fa-check-circle text-success"></i> Centering: Perfectly centered
+            </div>
+            <a href="#" class="toggle-info" data-bs-toggle="collapse" data-bs-target="#centeringInfo">
+              <i class="fa fa-caret-down"></i>
+            </a>
+          </div>
+          <div id="centeringInfo" class="collapse mt-2">
+            Your body position was perfectly centered throughout your presentation. This projected confidence and professionalism.
+          </div>
+        </li>
+        <li class="list-group-item {% if 'analytics' == tab %}visible{% else %}invisible{% endif %}">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <i class="fa fa-check-circle text-success"></i> Emotion: Mostly Neutral
+            </div>
+            <a href="#" class="toggle-info" data-bs-toggle="collapse" data-bs-target="#eyeContactInfo">
+              <i class="fa fa-caret-down"></i>
+            </a>
+          </div>
+          <div id="eyeContactInfo" class="collapse mt-2">
+            Your eye contact was excellent, maintaining it for 84% of your presentation. This helped you connect with your audience and build rapport.
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div id="analytics" class="tab-pane fade show active">
+      <ul class="list-group">
+        
+        <li class="list-group-item {% if 'coaching' == tab %}visible{% else %}invisible{% endif %}">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <i class="fa fa-check-circle text-success"></i> Questions
+            </div>
+            <a href="#" class="toggle-info" data-bs-toggle="collapse" data-bs-target="#centeringInfo2">
+              <i class="fa fa-caret-down"></i>
+            </a>
+          </div>
+          <div id="centeringInfo2" class="collapse mt-2">
+            Your body position was perfectly centered throughout your presentation. This projected confidence and professionalism.
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+  $('.btn-group button').on('click', function() {
+    var tabId = $(this).attr('href');
+    var tabName = tabId.substring(1); // extract tab name from ID
+    console.log(`Clicked tab: ${tabName}`);
+    $('.tab-pane').find('.list-group-item').addClass('invisible');
+    if (tabName === 'analytics') {
+      console.log('Showing #coaching list items');
+      $('#coaching').find('.list-group-item').removeClass('invisible');
+    } else if (tabName === 'coaching') {
+      console.log('Showing #analytics list items');
+      $('#analytics').find('.list-group-item').removeClass('invisible');
+    }
+  });
+
+  $('.toggle-info').on('click', function() {
+    var target = $(this).data('bs-target');
+    $(target).collapse('toggle');
+  });
+</script>
+
+<style>
+  body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    width: 80%;
+    margin: 0 auto;
+  }
+
+  .btn-group button {
+    border-radius: 15px;
+  }
+
+  .btn-group button.active {
+    background-color: transparent;
+    color: #007bff;
+  }
+
+  .tab-pane {
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    padding: 10px;
+  }
+
+  .list-group-item {
+    border: 1px solid #ddd;
+    margin-bottom: 5px;
+  }
+
+  .list-group-item:hover {
+    background-color: #f8f9fa;
+  }
+
+  .fa-info-circle {
+    margin-left: 5px;
+    color: #007bff;
+  }
+
+  .invisible {
+    display: none;
+  }
+</style>
+
+{% endblock content %}

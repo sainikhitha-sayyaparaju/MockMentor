@@ -25,13 +25,15 @@ import openai
 
 questions = []
 # API_KEY = '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' old_key
-API_KEY = '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'
+# API_KEY = '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' old
+API_KEY = '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'
 os.environ["OPENAI_API_KEY"] = API_KEY
 openai.api_key = os.getenv("OPENAI_API_KEY")
 stop_streaming = False
 emotions = []
 directions = []
 position = []
+location = []
 
 # face_cascade = cv2.CascadeClassifier(
 #     cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
@@ -66,12 +68,15 @@ position = []
 #             cv2.putText(frame, "Wrong Distance", (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
 
 def home(request):
-    print(emotions, directions, position)
+    print(emotions, directions, position, location)
     return render(request, 'dashboard/home.html')
 
 def feedback(request):
-    print(emotions, directions, position)
-    return render(request, 'dashboard/feedback.html')
+    tab = request.GET.get('tab', 'coaching')
+    context = {'tab': tab}
+    return render(request, 'dashboard/feedback.html', context)
+    # print(emotions, directions, position)
+    # return render(request, 'dashboard/feedback.html')
 
 
 def getCam(request):
@@ -103,10 +108,7 @@ def takeInterview(request):
             questions = list(response.split('$'))
             questions.pop(-1)
             print("questions", questions)
-            if request.POST['way'] == 'mobile':
-                return redirect('camKey')
-            else:
-                return render(request, 'dashboard/camera.html', {'questions': questions})
+            return render(request, 'dashboard/camera.html', {'questions': questions})
     else:
         form = InterviewForm()
 
@@ -205,9 +207,11 @@ def video_stream(main_interview):
     global emotions
     global directions
     global position
+    global location
     emotions = []
-    directions = []
+    directions = [0,0]
     position = []
+    location = [0, 0, 0]
     cap = cv2.VideoCapture(0)
     while not stop_streaming:
         ret, frame = cap.read()
@@ -216,6 +220,10 @@ def video_stream(main_interview):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         frame_flip = cv2.flip(frame, 1)
         if main_interview:
+            cen, dis, tot = process_frame(frame_flip, False)
+            location[0] += cen
+            location[1] += dis
+            location[2] += tot
             map_face_mesh = mp.solutions.face_mesh
             with map_face_mesh.FaceMesh(max_num_faces=1, refine_landmarks=True, min_detection_confidence=0.5, min_tracking_confidence=0.5) as face_mesh:
                 results = face_mesh.process(frame_flip)
@@ -223,7 +231,9 @@ def video_stream(main_interview):
                 emotions.append(em)
                 if results.multi_face_landmarks:
                     dir = iris_position_detection(frame_flip, results, True)
-                    directions.append(dir)
+                    if dir == 'center':
+                        directions[0] += 1
+                    directions[1] += 1
         else:
             process_frame(frame_flip)
             # pass

@@ -12,22 +12,16 @@ class InterviewForm(forms.ModelForm):
         ('hard', 'Hard'),
     )
 
-    WAY = (
-        ('laptop', 'Laptop'),
-        ('mobile', 'Mobile'),
-    )
 
     # expertise = forms.ChoiceField(
     #     choices=EXPERTISE_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
 
     expertise = forms.ChoiceField(
         choices=EXPERTISE_CHOICES, widget=forms.RadioSelect())
-    way = forms.ChoiceField(
-        choices=WAY, widget=forms.RadioSelect())
 
     class Meta:
         model = Interview
-        fields = ['topic', 'subtopic', 'expertise', 'number', 'way']
+        fields = ['topic', 'subtopic', 'expertise', 'number']
 
 
 
