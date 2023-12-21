@@ -12,6 +12,8 @@ print("sravya")
 # emotion detection coordinates
 emotion_labels = ['Angry', 'Disgust', 'Fear',
                   'Happy', 'Neutral', 'Sad', 'Surprise']
+# emotion_labels = ['Disgust', 'Disgust', 'Fear',
+#                   'Happy', 'Neutral', 'Sad', 'Happy']
 face_classifier = cv2.CascadeClassifier(
     cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
 classifier = load_model(r'C:/Users/saini/OneDrive/Desktop/Major Project/MockMentor/dashboard/model.h5')

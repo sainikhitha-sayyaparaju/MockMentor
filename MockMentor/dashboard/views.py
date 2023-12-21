@@ -21,6 +21,7 @@ from django.http import StreamingHttpResponse
 from django.views.decorators import gzip
 import os
 import openai
+from collections import Counter
 
 
 questions = []
@@ -35,45 +36,23 @@ directions = []
 position = []
 location = []
 
-# face_cascade = cv2.CascadeClassifier(
-#     cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-
-# def is_face_centered(face_coordinates, frame_width, frame_height, tolerance=0.15):
-#     distance_to_center_x = abs(face_coordinates[0] + face_coordinates[2] // 2 - frame_width // 2) / frame_width
-#     distance_to_center_y = abs(face_coordinates[1] + face_coordinates[3] // 2 - frame_height // 2) / frame_height
-#     return distance_to_center_x < tolerance and distance_to_center_y < tolerance
-
-
-# def is_face_at_right_distance(face_coordinates, reference_distance, tolerance=0.15):
-#     face_height = face_coordinates[3]
-#     return abs(face_height - reference_distance) / reference_distance < tolerance
-
-# def process_frame(frame):
-#     print("location")
-#     frame_height, frame_width, _ = frame.shape
-
-#     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-#     faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
-
-#     for (x, y, w, h) in faces:
-#         if is_face_centered((x, y, w, h), frame_width, frame_height):
-#             cv2.putText(frame, "Face Centered", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
-#         else:
-#             cv2.putText(frame, "Face Not Centered", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
-
-#         if is_face_at_right_distance((x, y, w, h), reference_distance=150):
-#             cv2.putText(frame, "Right Distance", (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
-#         else:
-#             cv2.putText(frame, "Wrong Distance", (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
-
 def home(request):
     print(emotions, directions, position, location)
     return render(request, 'dashboard/home.html')
 
 def feedback(request):
     tab = request.GET.get('tab', 'coaching')
-    context = {'tab': tab}
+    emotion_counts = Counter(emotions)
+    
+    length = len(emotions)
+    up = ((emotion_counts['Fear'] + emotion_counts['Angry'] + emotion_counts['Disgust'] + emotion_counts['Sad']) / length) * 100
+    happy = (emotion_counts['Happy'] / length) * 100
+    neutral = (emotion_counts['Neutral'] / length) * 100
+    surprise = (emotion_counts['Surprise'] / length) * 100
+    feedback = api_call(generate_prompt_emotion_feedback())
+    ec_center = int((directions[0] / directions[1]) * 100)
+    context = {'tab': tab, 'up': int(up), 'happy': int(happy), 'neutral': int(neutral), 'surprise': int(surprise), 'max': max(emotions), 'feedback': feedback, 'ec_center': ec_center, 'loc1': location[0] > location[2] - location[0], 'loc2': location[1] > location[2] - location[1]}
+    print(context)
     return render(request, 'dashboard/feedback.html', context)
     # print(emotions, directions, position)
     # return render(request, 'dashboard/feedback.html')
@@ -103,7 +82,7 @@ def takeInterview(request):
             )
             messages.success(
                 request, f'interview scheduled succesfully!')
-            response = get_questions(request.POST['topic'], request.POST['expertise'], request.POST['number'], request.POST['subtopic'])
+            response = api_call(generate_prompt_questions(request.POST['topic'], request.POST['expertise'], request.POST['number'], request.POST['subtopic']))
             global questions
             questions = list(response.split('$'))
             questions.pop(-1)
@@ -115,72 +94,17 @@ def takeInterview(request):
     context = {'form': form}
     return render(request, 'dashboard/takeInterview.html', context)
 
-
-def getCamKey(request):
-    print(request.method)
-    key = ""
-    if request.method == 'POST':
-        print(request.POST.get('key'))
-        key = request.POST.get('key')
-        messages.success(
-            request, f"key taken successfully!")
-        context = {'key': key}
-        return render(request, "dashboard/cameraMobile.html", context)
-    
-    return render(request, "dashboard/camKey.html")
-
-
-
-def gen(camera):
-    while True:
-        frame = camera.get_frame()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
-
-
-def video_feed(request):
-    return StreamingHttpResponse(gen(VideoCamera()),
-                                 content_type='multipart/x-mixed-replace; boundary=frame')
-
-
-def webcam_feed(request, key):
-    print(key, "webcam")
-    return StreamingHttpResponse(gen(IPWebCam(key)),
-                                 content_type='multipart/x-mixed-replace; boundary=frame')
-
-
-def getStreaming(request):
-    cap = cv2.VideoCapture(0)
-    map_face_mesh = mp.solutions.face_mesh
-    with map_face_mesh.FaceMesh(max_num_faces=1, refine_landmarks=True, min_detection_confidence=0.5, min_tracking_confidence=0.5) as face_mesh:
-        while True:
-            ret, frame = cap.read()
-            if not ret:
-                break
-            frame = cv2.flip(frame, 1)
-            rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            results = face_mesh.process(rgb_frame)
-            if results.multi_face_landmarks:
-                iris_position_detection(frame, results, True)
-            # face_emotion_detection(frame)
-            ret, jpeg = cv2.imencode('.jpg', frame)
-            cv2.imshow("image", jpeg.tobytes())
-            # cv2.imshow("image", frame)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-    cap.release()
-    cv2.destroyAllWindows()
-
-
-
-def generate_prompt(topic, expertise, number, specialization):
-    if specialization == "":
+def generate_prompt_questions(topic, expertise, number, specialization):
+    if specialization != "":
         return f'generate {number} questions in the topic {topic} on {specialization} based on the expertise level {expertise}. give me just the questions. give me the questions in a single line without numbering the questions, add a dollar symbol after each question'
     return f'generate {number} questions on the topic {topic} based on the expertise level {expertise}. give me just the questions. give me the questions in a single line without numbering the questions, add a dollar symbol after each question'
 
-def get_questions(topic, expertise, number, specialization):
+def generate_prompt_emotion_feedback():
+    return f'{emotions} These are the different emotion showed by  a person during his interview. Give him an advise consisting of 50 words. before starting the advise, tell his his previously show emotions, how that can effect his interview, what is dominant etc'
+
+def api_call(promptt):
     response = openai.Completion.create(engine='text-davinci-003',
-                                        prompt = generate_prompt(topic, expertise, number, specialization),
+                                        prompt = promptt,
                                         temperature = 0.7,
                                         max_tokens = 512)["choices"][0]["text"]
     return response

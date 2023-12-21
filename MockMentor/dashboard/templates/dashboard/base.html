@@ -20,14 +20,16 @@
       integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
       crossorigin="anonymous"
     />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+    <!-- <link rel="stylesheet" href="{% static 'css/style.css' %}"> -->
   </head>
 
   <body>
     <header>
-      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <nav id="header" class="navbar navbar-expand-lg navbar-dark bg-dark" style="background-color: #333; padding: 10px 0;">
         <div class="container-fluid">
-          <a class="navbar-brand" href="#">MockMentor</a>
+          <a class="navbar-brand" href="{% url 'home' %}" style=" font-size:180%;"><span style="color: crimson;">M</span>ock <span style="color: crimson;">M</span>entor</a>
           <button
             class="navbar-toggler"
             type="button"
@@ -48,62 +50,59 @@
                 <a
                   class="nav-link active"
                   aria-current="page"
+                  style=" font-size:130%;"
                   href="{% url 'home' %}"
                   >Home</a
                 >
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'history' %}">History</a>
+                <a class="nav-link" style=" font-size:130%;" href="{% url 'history' %}">History</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'checkPosition' %}">Check Position</a>
+                <a class="nav-link" style=" font-size:130%;" href="{% url 'checkPosition' %}">CheckPosition</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Profile</a>
-              </li>
-              <!-- <li class="nav-item dropdown">
-                <a
-                  class="nav-link dropdown-toggle"
-                  href="#"
-                  id="navbarDropdown"
-                  role="button"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  Options
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" href="#">Books</a>
-                  <a class="dropdown-item" href="#">Wikipedia</a>
-                  <div class="dropdown-divider"></div>
-
-                  <a class="dropdown-item" href="#">Dictionary</a>
-                  <a class="dropdown-item" href="#">Youtube</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="#">To-do</a>
-                  <a class="dropdown-item" href="#">Homework</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="#">Notes</a>
-                  <a class="dropdown-item" href="#">Conversion</a>
-                  <div class="dropdown-divider"></div>
-                </div>
-              </li> -->
-
-              <li class="nav-item">
-                <a class="nav-link" href="#">Logout</a>
+                <a class="nav-link" style=" font-size:130%;" href="#">Profile</a>
               </li>
               <li class="nav-item">
+                <a class="nav-link" style=" font-size:130%;" href="#">Logout</a>
+              </li>
+              <!-- <li class="nav-item">
                 <a class="nav-link" href="#">Register</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#">Login</a>
-              </li>
+              </li> -->
             </ul>
           </div>
         </div>
       </nav>
     </header>
+    <!-- Header -->
+ <!-- <section id="header" style="background-color: #333; padding: 20px 0;">
+  <div class="header container">
+    <div class="nav-bar">
+      <div class="brand">
+        <a href="#hero">
+          <h1><span>S</span>haif <span>A</span>rfan</h1>
+        </a>
+      </div>
+      <div class="nav-list">
+        <div class="hamburger">
+          <div class="bar"></div>
+        </div>
+        <ul>
+          <li><a href="#hero" data-after="Home">Home</a></li>
+          <li><a href="#services" data-after="Service">Services</a></li>
+          <li><a href="#projects" data-after="Projects">Projects</a></li>
+          <li><a href="#about" data-after="About">About</a></li>
+          <li><a href="#contact" data-after="Contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section> -->
+<!-- End Header -->
     <br /><br />
     <main>
       {% if messages %} {% for msg in messages %}
@@ -139,6 +138,9 @@
             });
         });
     });
+    </script>
+    <script>
+      
     </script>
   </body>
 </html>

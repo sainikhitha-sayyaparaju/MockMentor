@@ -1,6 +1,6 @@
 {% extends 'dashboard/base.html' %} {% load static %} {% block content %}
 
-<section class="container text-center">
+<!-- <section class="container text-center">
   <h3>Welcome</h3>
 
   <hr />
@@ -22,5 +22,162 @@
       </a>
     </div>
   </div>
+</section> -->
+ 
+
+
+<!-- Hero Section  -->
+<section id="hero">
+  <div class="hero container">
+    <div>
+      <h1>Hello, <span></span></h1>
+      <h1>Welcome to MockMentor<span></span></h1>
+      <h1>Ready for the Interview?<span></span></h1>
+      <a href="{% url 'takeInterview' %}" type="button" class="cta">Start</a>
+    </div>
+  </div>
 </section>
+<!-- End Hero Section  -->
+
+<!-- Projects Section -->
+<section id="projects">
+  <div class="projects container">
+    <div class="projects-header">
+      <h1 class="section-title">We <span>Provide</span></h1>
+    </div>
+    <div class="all-projects">
+      <div class="project-item">
+        <div class="project-info">
+          <h1>Customized Mock Interviews</h1>
+          <br/>
+          <ul>
+            <li>Schedule mock interviews tailored to your specific industry, job role, or topic of interest.</li>
+            <li>Choose the number of questions and difficulty level to match your preparation needs.</li>
+          </ul>
+        </div>
+        <div class="project-img">
+          <img src="{% static 'images/p1.jpg' %}" >
+        </div>
+      </div>
+      <div class="project-item">
+        <div class="project-info">
+          <h1>Comprehensive Feedback Analysis</h1>
+          <br/>
+          <ul>
+            <li>Receive detailed feedback on your interview performance, including emotional expression, eye movement, and body positioning.</li>
+            <li>Identify strengths and areas for improvement to enhance your overall interview skills.</li>
+          </ul>
+        </div>
+        <div class="project-img">
+          <img src="{% static 'images/p6.png' %}" >
+        </div>
+      </div>
+      <div class="project-item">
+        <div class="project-info">
+          <h1>Real-time Emotion Recognition</h1>
+          <br/>
+          <ul>
+            <li>Leverage cutting-edge technology to analyze and provide feedback on your emotional responses during the mock interview.</li>
+            <li>Understand how your emotions may impact your communication and refine your reactions accordingly.</li>
+          </ul>
+        </div>
+        <div class="project-img">
+          <img src="{% static 'images/p3.jpg' %}" >
+        </div>
+      </div>
+      <div class="project-item">
+        <div class="project-info">
+          <h1>Real-Time Answer Suggestions</h1>
+          <br/>
+          <ul>
+            <li>Receive real-time suggestions and tips for improving your answers during the mock interview.</li>
+            <li>Benefit from ChatGPT's insights to enhance the clarity and effectiveness of your responses.</li>
+          </ul>
+        </div>
+        <div class="project-img">
+          <img src="{% static 'images/p4.png' %}" >
+        </div>
+      </div>
+      <div class="project-item">
+        <div class="project-info">
+          <h1>Dynamic Question Bank</h1>
+          <br/>
+          <ul>
+            <li>Experience an ever-evolving question bank generated dynamically through the ChatGPT API.
+              Immerse yourself in real interview questions for an authentic and adaptive interview simulation.</li>
+          </ul>
+        </div>
+        <div class="project-img">
+          <img src="{% static 'images/p5.jpg' %}" >
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End Projects Section -->
+
+<!-- Contact Section -->
+<section id="contact">
+  <div class="contact container">
+    <div>
+      <h1 class="section-title">Contact <span>info</span></h1>
+    </div>
+    <br/><br/><br/>
+    <div class="contact-items">
+      <div class="contact-item">
+        <div class="icon"><img src="https://img.icons8.com/bubbles/100/000000/phone.png" /></div>
+        <div class="contact-info">
+          <h1>Phone</h1>
+          <h2>+91 6281111111</h2>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="icon"><img src="https://img.icons8.com/bubbles/100/000000/new-post.png" /></div>
+        <div class="contact-info">
+          <h1>Email</h1>
+          <h2>mockmentor.svecw@gmail.com</h2>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="icon"><img src="https://img.icons8.com/bubbles/100/000000/map-marker.png" /></div>
+        <div class="contact-info">
+          <h1>Address</h1>
+          <h2>Vishnupur, Bhimavaram</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End Contact Section -->
+
+<!-- Footer -->
+<section id="footer">
+  <div class="footer container">
+    <div class="brand">
+      <h1><span>M</span>ock <span>M</span>entor</h1>
+    </div>
+    <!-- <h2>Your Complete Web Solution</h2> -->
+    <div class="social-icon">
+      <div class="social-item">
+        <a href="#"><img src="https://img.icons8.com/bubbles/100/000000/facebook-new.png" /></a>
+      </div>
+      <div class="social-item">
+        <a href="#"><img src="https://img.icons8.com/bubbles/100/000000/instagram-new.png" /></a>
+      </div>
+      <!-- <div class="social-item">
+        <a href="#"><img src="https://img.icons8.com/bubbles/100/000000/twitter.png" /></a>
+      </div> -->
+      <div class="social-item">
+        <a href="#"><img src="https://img.icons8.com/bubbles/100/000000/behance.png" /></a>
+      </div>
+    </div>
+    <!-- <p>Copyright © 2020 Arfan. All rights reserved</p> -->
+  </div>
+</section>
+<!-- End Footer -->
+<!-- <script src="url('{% static 'images/app.js' %}')"></script> -->
+<script>
+  document.getElementById('hero').style.backgroundImage = "url('{% static 'images/hero-bg.png' %}')";
+</script>
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
 {% endblock content %}
